@@ -9,10 +9,22 @@ import { signIn, signOut, useSessions, getProviders } from "next-auth/react";
 const Nav = () => {
   const userLoggedIn = true;
 
+  const [providers, setProviders] = useState(null);
+  const [toggleDropdown, setToggleDropdown] = useState(false);
+
+  useEffect(() => {
+    const setProviders = async () => {
+      const response = await getProviders();
+
+      setProviders(response);
+    }
+    setProviders();
+  }, []);
+
   return (
     <nav className="flex-between w-full mb-16 pt-3">
-      <Link 
-        href="/" 
+      <Link
+        href="/"
         className="flex flex-center gap-2"
       >
         <Image
@@ -33,8 +45,8 @@ const Nav = () => {
         {/* need to know if a user is logged in so we know which buttons to show */}
         {userLoggedIn ? (
           <div className="flex gap-3 md:gap-5">
-            <Link 
-              href="/create-prompt" 
+            <Link
+              href="/create-prompt"
               className="black_btn"
             >
               Create Post
@@ -50,18 +62,91 @@ const Nav = () => {
 
             <Link href="/profile">
               {/* User Image */}
-              <Image 
+              <Image
                 src="/assets/images/logo.svg"
                 alt="Profile Image"
                 width={37}
                 height={37}
                 className="rounded-full"
+                onClick={() => { }}
               />
             </Link>
           </div>
         ) : (
           <>
-            
+            {/* check if we have access to providers. If so, map and return a button */}
+            {providers && Object.values(providers).map((provider) => (
+              <button
+                type="button"
+                key={provider.name}
+                onClick={() => signIn(provider.id)}
+                className="black_btn"
+              >
+                Sign In
+              </button>
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Mobile Nav */}
+      <div className="sm:hidden flex relative">
+        {/* is user logged in */}
+        {userLoggedIn ? (
+          <div className="flex">
+            <Image
+              src="/assets/images/logo.svg"
+              alt="Profile Image"
+              width={37}
+              height={37}
+              className="rounded-full"
+              onClick={() => setToggleDropdown((prev) => !prev)}
+            />
+
+            {/* Dropdown */}
+            {toggleDropdown && (
+              <div className="dropdown">
+                <Link
+                  href="/profile"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  My Profile
+                </Link>
+
+                <Link
+                  href="/create-prompt"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setToggleDropdown(false);
+                    signOut();
+                  }}
+                  className="w-full mt-5 black_btn"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* check if we have access to providers. If so, map and return a button */}
+            {providers && Object.values(providers).map((provider) => (
+              <button
+                type="button"
+                key={provider.name}
+                onClick={() => signIn(provider.id)}
+                className="black_btn"
+              >
+                Sign In
+              </button>
+            ))}
           </>
         )}
       </div>
@@ -70,3 +155,6 @@ const Nav = () => {
 }
 
 export default Nav
+
+// to use Next Auth, we need to have access to Providers.
+// to use them we need to make a useEffect hook
