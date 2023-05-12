@@ -3,7 +3,7 @@ import Nav from '@components/Nav';
 import Provider from '@components/Provider';
 
 export const metadata = {
-  title: 'Prompty',
+  title: 'prompty',
   description: 'Discover & Share Chat AI Prompts',
 }
 const RootLayout = ({ children }) => {
