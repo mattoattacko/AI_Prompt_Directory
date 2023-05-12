@@ -63,7 +63,7 @@ const Nav = () => {
             <Link href="/profile">
               {/* User Image */}
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 alt="Profile Image"
                 width={37}
                 height={37}
@@ -95,7 +95,7 @@ const Nav = () => {
         {session?.user ? (
           <div className="flex">
             <Image
-              src="/assets/images/logo.svg"
+              src={session?.user.image}
               alt="Profile Image"
               width={37}
               height={37}
