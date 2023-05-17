@@ -5,12 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import Image from 'next/image';
-import { set } from 'mongoose';
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
 
   const [copied, setCopied] = useState('');
   const { data: session } = useSession();
+  const pathName = usePathname();
   const router = useRouter();
 
   //~~~ Copy prompt to clipboard ~~~//
@@ -74,6 +74,25 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
       >
         {post.tag}
       </p>
+
+      {/* check if the currently logged in user is the creator of a post, and if they are on the  '/profile' page. If so, show the Edit and Delete buttons  */}
+      {session?.user.id === post.creator._id && pathName === '/profile' && (
+        <div className='flex-center mt-5 gap-4 border-t border-gray-100 pt-3'>
+          <p
+            className='font-inter text-sm green_gradient cursor-pointer'
+            onClick={handleEdit}
+          >
+            Edit
+          </p>
+
+          <p
+            className='font-inter text-sm orange_gradient cursor-pointer'
+            onClick={handleDelete}
+          >
+            Delete
+          </p>
+        </div>
+      )}
     </div>
   )
 }

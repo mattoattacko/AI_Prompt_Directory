@@ -26,12 +26,28 @@ const MyProfile = () => {
   }, []);
 
 
-  const handleEdit = () => {
-    []
+  const handleEdit = (post) => {
+    // navigate users to a different page to edit the post.
+    router.push(`/update-prompt?id=${post._id}`);
   }
   
-  const handleDelete = () => {
-    []
+  const handleDelete = async (post) => {
+    const confirmDelete = confirm('Are you sure you want to delete this prompt?');
+
+    if(confirmDelete) {
+      try {
+        await fetch(`/api/posts/${post._id.toString()}`, {
+          method: 'DELETE'
+        })
+
+        // get all the posts but without the deleted post
+        const filteredPosts = posts.filter((p) => p._id !== post._id);
+
+        setPosts(filteredPosts);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   return (
